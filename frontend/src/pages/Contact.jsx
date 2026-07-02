@@ -1,111 +1,66 @@
+import "../styles/Contact.css";
+
 function Contact() {
+  return (
+    <div className="contact-container">
 
-    return (
+      <h1 className="contact-title">
+        Contact Us
+      </h1>
 
-        <div
-        style={{
-            padding:"50px",
-            textAlign:"center"
-        }}
-        >
+      <p className="contact-subtitle">
+        Reach out to us anytime.
+      </p>
 
-            <h1>Contact Us</h1>
+      <div className="contact-wrapper">
 
-            <p
-            style={{
-                marginTop:"10px",
-                marginBottom:"30px"
-            }}
-            >
-                We'd love to hear from you. Feel free to contact us for inquiries and orders.
-            </p>
+        <div className="contact-info">
 
-            <div
-            style={{
-                display:"flex",
-                justifyContent:"center",
-                gap:"30px",
-                flexWrap:"wrap"
-            }}
-            >
+          <h3>Store Information</h3>
 
-                <div
-                style={{
-                    width:"300px",
-                    padding:"20px",
-                    border:"1px solid #ddd",
-                    borderRadius:"10px"
-                }}
-                >
+          <div className="contact-item">
+            📍 Stall# G-53, Lipa City Public Market, Lipa City, Batangas
+          </div>
 
-                    <h3>Telephone</h3>
+          <div className="contact-item">
+            📞 981 - 4658
+          </div>
 
-                    <p>981-4658</p>
+          <div className="contact-item">
+            ✉ johnrichmondelacruz@gmail.com
+          </div>
 
-                </div>
+          <div className="contact-item">
+            🕒 Monday - Sunday: 3:00 AM - 5:00 PM
+          </div>
 
+          <h3 style={{ marginTop: "30px" }}>
+            Store Location
+          </h3>
 
-                <div
-                style={{
-                    width:"300px",
-                    padding:"20px",
-                    border:"1px solid #ddd",
-                    borderRadius:"10px"
-                }}
-                >
+          <div className="map-container">
 
-                    <h3>Email</h3>
+            <iframe
+              title="Store Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d968.0629614304553!2d121.1600636695736!3d13.94360459915429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd6d0014a4ce09%3A0xdcb6e42fc558e95e!2sAmang%20and%20Beth%20Rice%20Store!5e0!3m2!1sen!2sph!4v1782877537435!5m2!1sen!2sph"
+              width="100%"
+              height="350"
+              style={{
+                border: "0",
+                borderRadius: "10px"
+              }}
+              allowFullScreen=""
+              loading="lazy"
+            />
 
-                    <p>johnrichmondelacruz@email.com</p>
-
-                </div>
-
-
-                <div
-                style={{
-                    width:"300px",
-                    padding:"20px",
-                    border:"1px solid #ddd",
-                    borderRadius:"10px"
-                }}
-                >
-
-                    <h3>Address</h3>
-
-                    <p>Stall #G-53 Lipa City Public Market, Lipa City, Batangas</p>
-
-                </div>
-
-            </div>
-
-            <div
-            style={{
-                marginTop:"50px"
-            }}
-            >
-
-                <h2>Find Us</h2>
-
-                <iframe
-                title="map"
-                width="100%"
-                height="400"
-                style={{
-                    border:"0",
-                    borderRadius:"10px"
-                }}
-                loading="lazy"
-                allowFullScreen
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d968.0629614304553!2d121.1600636695736!3d13.94360459915429!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd6d0014a4ce09%3A0xdcb6e42fc558e95e!2sAmang%20and%20Beth%20Rice%20Store!5e0!3m2!1sen!2sph!4v1782877537435!5m2!1sen!2sph"
-                >
-                </iframe>
-
-            </div>
+          </div>
 
         </div>
 
-    );
+      </div>
 
+    </div>
+  );
 }
 
 export default Contact;

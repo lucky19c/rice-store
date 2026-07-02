@@ -1,71 +1,146 @@
 from flask import Blueprint, jsonify, request
-from database import db, cursor
+from database import connection
 
 orders = Blueprint("orders", __name__)
 
 
+# Get all orders
 @orders.route("/orders", methods=["GET"])
 def get_orders():
 
-    query = """
-    SELECT
-    o.order_id,
-    c.fullname,
-    c.contact_number,
-    o.total_amount,
-    o.status
+    try:
 
-    FROM orders o
+        cursor = connection.cursor(dictionary=True)
 
-    JOIN customers c
-    ON o.customer_id=c.customer_id
+        query = """
 
-    ORDER BY o.order_id DESC
-    """
+        SELECT
+        o.order_id,
+        c.fullname,
+        c.contact_number,
+        c.address,
+        c.email,
+        o.total_amount,
+        o.status
 
-    cursor.execute(query)
+        FROM orders o
 
-    results = cursor.fetchall()
+        JOIN customers c
+        ON o.customer_id=c.customer_id
 
-    data=[]
+        ORDER BY o.order_id DESC
 
-    for row in results:
+        """
 
-        data.append({
+        cursor.execute(query)
 
-            "order_id":row[0],
-            "fullname":row[1],
-            "contact_number":row[2],
-            "total_amount":row[3],
-            "status":row[4]
+        data = cursor.fetchall()
+
+        cursor.close()
+
+        return jsonify(data)
+
+    except Exception as e:
+
+        print(e)
+
+        return jsonify({
+            "error":str(e)
+        }),500
+
+
+
+# Update order status
+@orders.route("/orders/<int:id>", methods=["PUT"])
+def update_order(id):
+
+    try:
+
+        data=request.json
+
+        cursor=connection.cursor()
+
+        cursor.execute(
+
+            """
+
+            UPDATE orders
+
+            SET status=%s
+
+            WHERE order_id=%s
+
+            """,
+
+            (
+
+                data["status"],
+                id
+
+            )
+
+        )
+
+        connection.commit()
+
+        cursor.close()
+
+        return jsonify({
+
+            "message":"Status updated"
 
         })
 
-    return jsonify(data)
+    except Exception as e:
+
+        print(e)
+
+        return jsonify({
+
+            "error":str(e)
+
+        }),500
 
 
 
-@orders.route("/orders/<int:id>",methods=["PUT"])
-def update_order(id):
+# Delete order
+@orders.route("/orders/<int:id>", methods=["DELETE"])
+def delete_order(id):
 
-    data=request.json
+    try:
 
-    status=data["status"]
+        cursor=connection.cursor()
 
-    cursor.execute(
-        """
-        UPDATE orders
-        SET status=%s
-        WHERE order_id=%s
-        """,
-        (
-            status,
-            id
+        cursor.execute(
+
+            "DELETE FROM order_items WHERE order_id=%s",
+
+            (id,)
         )
-    )
 
-    db.commit()
+        cursor.execute(
 
-    return jsonify({
-        "message":"Status updated"
-    })
+            "DELETE FROM orders WHERE order_id=%s",
+
+            (id,)
+        )
+
+        connection.commit()
+
+        cursor.close()
+
+        return jsonify({
+
+            "message":"Order deleted"
+
+        })
+
+    except Exception as e:
+
+        print(e)
+
+        return jsonify({
+
+            "error":str(e)
+
+        }),500

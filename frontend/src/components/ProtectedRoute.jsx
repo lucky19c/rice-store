@@ -8,6 +8,17 @@ function ProtectedRoute({ children }) {
     return isAdmin === "true"
         ? children
         : <Navigate to="/login" />;
+    
+        <Route
+            path="/orders"
+            element={
+            <ProtectedRoute>
+
+            <Orders/>
+
+            </ProtectedRoute>
+            }
+            />
 
 }
 

@@ -1,92 +1,169 @@
 import { useState } from "react";
-import api from "../services/api";
+import axios from "axios";
 
 function AddProduct() {
 
-    const [formData, setFormData] = useState({
-        rice_name:"",
-        description:"",
-        price:"",
-        stock_quantity:"",
-        image:""
-    });
+  const [riceName, setRiceName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [stockQuantity, setStockQuantity] = useState("");
+  const [image, setImage] = useState("");
+  const [category, setCategory] = useState("Rice");
 
-    const handleChange=(e)=>{
+  const handleSubmit = async (e) => {
 
-        setFormData({
-            ...formData,
-            [e.target.name]:e.target.value
-        });
+    e.preventDefault();
 
-    };
+    try {
 
-    const handleSubmit=(e)=>{
+      await axios.post(
+        "http://127.0.0.1:5000/products",
+        {
+          rice_name: riceName,
+          description: description,
+          price: price,
+          stock_quantity: stockQuantity,
+          image: image,
+          category: category
+        }
+      );
 
-        e.preventDefault();
+      alert("Product added successfully!");
 
-        api.post("/products", formData)
-        .then(()=>{
+      // Clear all fields after adding
+      setRiceName("");
+      setDescription("");
+      setPrice("");
+      setStockQuantity("");
+      setImage("");
+      setCategory("Rice");
 
-            alert("Product added!");
+    } catch (error) {
 
-            window.location.reload();
+      console.log(error);
 
-        })
-        .catch(error=>{
+      alert("Error adding product");
 
-            console.log(error);
+    }
 
-        });
+  };
 
-    };
+  return (
 
-    return(
+    <div
+      style={{
+        maxWidth:"600px",
+        margin:"50px auto",
+        padding:"30px",
+        background:"white",
+        borderRadius:"15px",
+        boxShadow:"0 5px 15px rgba(0,0,0,.1)"
+      }}
+    >
 
-        <div>
+      <h1
+        style={{
+          textAlign:"center",
+          marginBottom:"30px"
+        }}
+      >
+        Add Product
+      </h1>
 
-            <h2>Add Rice Product</h2>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display:"flex",
+          flexDirection:"column",
+          gap:"15px"
+        }}
+      >
 
-            <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Product Name"
+          value={riceName}
+          onChange={(e)=>setRiceName(e.target.value)}
+          required
+        />
 
-                <input
-                name="rice_name"
-                placeholder="Rice Name"
-                onChange={handleChange}
-                />
+        <textarea
+          placeholder="Description"
+          value={description}
+          onChange={(e)=>setDescription(e.target.value)}
+          required
+        />
 
-                <input
-                name="description"
-                placeholder="Description"
-                onChange={handleChange}
-                />
+        <input
+          type="number"
+          placeholder="Price"
+          value={price}
+          onChange={(e)=>setPrice(e.target.value)}
+          required
+        />
 
-                <input
-                name="price"
-                placeholder="Price"
-                onChange={handleChange}
-                />
+        <input
+          type="number"
+          placeholder="Stock Quantity"
+          value={stockQuantity}
+          onChange={(e)=>setStockQuantity(e.target.value)}
+          required
+        />
 
-                <input
-                name="stock_quantity"
-                placeholder="Stock Quantity"
-                onChange={handleChange}
-                />
+        <input
+          type="text"
+          placeholder="Image URL"
+          value={image}
+          onChange={(e)=>setImage(e.target.value)}
+          required
+        />
 
-                <input
-                name="image"
-                placeholder="Image filename"
-                onChange={handleChange}
-                />
+        <select
+          value={category}
+          onChange={(e)=>setCategory(e.target.value)}
+        >
 
-                <button type="submit">
-                    Add Product
-                </button>
+          <option value="Rice">
+            Rice
+          </option>
 
-            </form>
+          <option value="Coffee">
+            Coffee
+          </option>
 
-        </div>
+          <option value="Snacks">
+            Snacks
+          </option>
 
-    )
+          <option value="Beans">
+            Beans
+          </option>
+
+          <option value="Others">
+            Others
+          </option>
+
+        </select>
+
+        <button
+          type="submit"
+          style={{
+            padding:"12px",
+            background:"#2E8B57",
+            color:"white",
+            border:"none",
+            borderRadius:"10px",
+            cursor:"pointer"
+          }}
+        >
+          Add Product
+        </button>
+
+      </form>
+
+    </div>
+
+  );
 
 }
 

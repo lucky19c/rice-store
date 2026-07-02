@@ -1,178 +1,240 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { CartContext } from "../context/CartContext";
-import api from "../services/api";
+import "../styles/Checkout.css";
 
-function Checkout() {
+function Checkout(){
 
-    const navigate = useNavigate();
+const {cart,clearCart}=useContext(CartContext);
+const navigate=useNavigate();
 
-    const { cart, clearCart } =
-    useContext(CartContext);
+const [customer,setCustomer]=useState({
 
-    const [customer,setCustomer]=useState({
+fullname:"",
+email:"",
+contact_number:"",
+address:""
 
-        fullname:"",
-        contact_number:"",
-        email:"",
-        address:""
+});
 
-    });
 
+const handleChange=(e)=>{
 
-    const handleChange=(e)=>{
+setCustomer({
 
-        setCustomer({
+...customer,
+[e.target.name]:
+e.target.value
 
-            ...customer,
+});
 
-            [e.target.name]:
-            e.target.value
+};
 
-        });
 
-    };
+const total=
 
+cart.reduce(
 
-    const handleCheckout=async()=>{
+(sum,item)=>
 
-        try{
+sum+
 
-            if(!cart || cart.length===0){
+(
 
-                alert(
-                    "Cart is empty"
-                );
+item.price*
+item.quantity
 
-                return;
+),
 
-            }
+0
 
-            const data={
+);
 
-                customer:customer,
 
-                items:
 
-                cart.map(item=>({
+const placeOrder=async(e)=>{
 
-                    product_id:
-                    item.product_id,
+e.preventDefault();
 
-                    quantity:
-                    item.quantity
+try{
 
-                }))
+await axios.post(
 
-            };
+"http://127.0.0.1:5000/checkout",
 
+{
 
-            console.log(
-                "Sending data:",
-                data
-            );
+customer,
 
-            const response=
+items:cart
 
-            await api.post(
-                "/checkout",
-                data
-            );
+}
 
-            alert(
-                "Order placed successfully!"
-            );
+);
 
-            clearCart();
+alert(
+"Order placed successfully!"
+);
 
-            navigate("/");
+clearCart();
 
-        }
+navigate("/cart");
 
-        catch(error){
+}
+catch(error){
 
-            console.log(
-                "Checkout Error:",
-                error
-            );
+console.log(error);
 
-            alert(
+alert(
 
-                error.response?.data?.error ||
+"Order failed"
 
-                "Failed to place order"
+);
 
-            );
+}
 
-        }
+};
 
-    };
 
 
-    return(
+return(
 
-        <div
-        style={{
-            padding:"40px"
-        }}
-        >
+<div className="checkout-container">
 
-            <h1>
-                Checkout
-            </h1>
+<h1 className="checkout-title">
 
+Checkout
 
-            <input
-            name="fullname"
-            placeholder="Full Name"
-            value={customer.fullname}
-            onChange={handleChange}
-            />
+</h1>
 
-            <br/><br/>
 
+<div className="checkout-card">
 
-            <input
-            name="contact_number"
-            placeholder="Contact Number"
-            value={customer.contact_number}
-            onChange={handleChange}
-            />
+<form onSubmit={placeOrder}>
 
-            <br/><br/>
 
+<input
+type="text"
+name="fullname"
+placeholder="Full Name"
+required
+value={customer.fullname}
+onChange={handleChange}
+/>
 
-            <input
-            name="email"
-            placeholder="Email"
-            value={customer.email}
-            onChange={handleChange}
-            />
 
-            <br/><br/>
+<input
+type="email"
+name="email"
+placeholder="Email"
+required
+value={customer.email}
+onChange={handleChange}
+/>
 
 
-            <textarea
-            name="address"
-            placeholder="Address"
-            value={customer.address}
-            onChange={handleChange}
-            />
+<input
+type="text"
+name="contact_number"
+placeholder="Phone Number"
+required
+value={customer.contact_number}
+onChange={handleChange}
+/>
 
-            <br/><br/>
 
+<input
+type="text"
+name="address"
+placeholder="Address"
+required
+value={customer.address}
+onChange={handleChange}
+/>
 
-            <button
-            onClick={handleCheckout}
-            >
 
-                Place Order
 
-            </button>
+<div className="order-summary">
 
-        </div>
+<h3>
 
-    );
+Order Summary
+
+</h3>
+
+{
+
+cart.map(item=>(
+
+<div
+className="order-item"
+key={item.product_id}
+>
+
+<span>
+
+{item.rice_name}
+
+x{item.quantity}
+
+</span>
+
+<span>
+
+₱{
+
+(
+
+item.price*
+item.quantity
+
+).toFixed(2)
+
+}
+
+</span>
+
+</div>
+
+))
+
+}
+
+
+
+<div className="checkout-total">
+
+Total:
+
+₱{
+
+total.toFixed(2)
+
+}
+
+</div>
+
+</div>
+
+
+
+<button
+type="submit"
+className="place-order-btn"
+>
+
+Place Order
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+);
 
 }
 

@@ -1,14 +1,15 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { CartContext } from "../context/CartContext";
+import "../styles/Products.css";
 
 function Products() {
 
     const [products, setProducts] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    const [search, setSearch] = useState("");
 
-    const { addToCart } =
-    useContext(CartContext);
-
+    const { addToCart } = useContext(CartContext);
 
     useEffect(() => {
 
@@ -21,14 +22,11 @@ function Products() {
 
         try {
 
-            const response =
-            await axios.get(
+            const response = await axios.get(
                 "http://127.0.0.1:5000/products"
             );
 
-            setProducts(
-                response.data
-            );
+            setProducts(response.data);
 
         }
 
@@ -41,128 +39,188 @@ function Products() {
     };
 
 
-    return(
+    const filteredProducts = products.filter(product => {
 
-        <div
-        style={{
-            padding:"40px"
-        }}
-        >
+        const categoryMatch =
 
-            <h1>
+        selectedCategory === "All"
+
+        ||
+
+        product.category === selectedCategory;
+
+
+        const searchMatch =
+
+        product.rice_name
+        .toLowerCase()
+        .includes(
+            search.toLowerCase()
+        );
+
+        return categoryMatch && searchMatch;
+
+    });
+
+
+    return (
+
+        <div className="products-container">
+
+            <h1 className="products-title">
+
                 Products
+
             </h1>
+
 
             <div
             style={{
-
-                display:"grid",
-                gridTemplateColumns:
-                "repeat(auto-fit,minmax(250px,1fr))",
-
-                gap:"20px"
-
+                display:"flex",
+                justifyContent:"center",
+                gap:"15px",
+                marginBottom:"40px",
+                flexWrap:"wrap"
             }}
             >
 
-            {
+                {/* Search */}
 
-            products.map(product=>(
+                <input
 
-                <div
+                type="text"
 
-                key={product.product_id}
+                placeholder="Search products..."
+
+                value={search}
+
+                onChange={(e)=>
+
+                setSearch(
+                    e.target.value
+                )
+
+                }
 
                 style={{
 
-                    border:"1px solid #ddd",
-                    padding:"20px",
-                    borderRadius:"10px"
+                    padding:"12px",
+                    width:"300px",
+                    borderRadius:"8px",
+                    border:"1px solid #ccc"
+
+                }}
+
+                />
+
+
+                {/* Category */}
+
+                <select
+
+                value={selectedCategory}
+
+                onChange={(e)=>
+
+                setSelectedCategory(
+                    e.target.value
+                )
+
+                }
+
+                style={{
+
+                    padding:"12px",
+                    width:"200px",
+                    borderRadius:"8px"
 
                 }}
 
                 >
 
+                    <option>All</option>
+                    <option>Rice</option>
+                    <option>Coffee</option>
+                    <option>Plastic</option>
+                    <option>Chicharon</option>
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+
+
+            <div className="product-grid">
+
+                {
+
+                filteredProducts.map(product => (
+
+                <div
+                className="product-card"
+                key={product.product_id}
+                >
+
                     <img
-
                     src={product.image}
-
                     alt={product.rice_name}
-
-                    style={{
-
-                        width:"100%",
-                        height:"200px",
-                        objectFit:"cover"
-
-                    }}
-
                     />
 
-                    <h3>
+                    <div className="product-content">
 
-                        {product.rice_name}
+                        <h3>
 
-                    </h3>
+                            {product.rice_name}
 
-                    <p>
+                        </h3>
 
-                        {product.description}
+                        <p>
 
-                    </p>
+                            {product.description}
 
-                    <p>
+                        </p>
 
-                        Category:
+                        <p className="price">
 
-                        {" "}
+                            ₱{product.price}
 
-                        {product.category}
+                        </p>
 
-                    </p>
+                        <p className="stock">
 
-                    <p>
+                            Stock: {product.stock_quantity}
 
-                        Stock:
-
-                        {" "}
-
-                        {product.stock_quantity}
-
-                    </p>
-
-                    <h3>
-
-                        ₱{product.price}
-
-                    </h3>
+                        </p>
 
 
-                    <button
+                        <button
 
-                    onClick={()=>{
+                        className="add-btn"
 
-                        addToCart(product);
+                        onClick={()=>{
 
-                        alert(
+                            addToCart(product);
 
-                            `${product.rice_name} added to cart`
+                            alert(
+                                `${product.rice_name} added to cart`
+                            );
 
-                        );
+                        }}
 
-                    }}
+                        >
 
-                    >
+                            Add To Cart
 
-                        Add to Cart
+                        </button>
 
-                    </button>
+                    </div>
 
                 </div>
 
-            ))
+                ))
 
-            }
+                }
 
             </div>
 

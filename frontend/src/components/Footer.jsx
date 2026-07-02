@@ -1,34 +1,45 @@
-function Footer() {
-  return (
-    <footer
-      style={{
-        background:"#2d6a4f",
-        color:"white",
-        textAlign:"center",
-        padding:"20px",
-        marginTop:"40px"
-      }}
-    >
-      <h3>Amang & Beth Rice Store</h3>
+import "../styles/Footer.css";
 
-      <p>
-        Providing quality products and trusted service
-        for every household.
-      </p>
+function Footer(){
 
-      <p>
-        Contact: 981-4658
-      </p>
+return(
 
-      <p>
-        Email: johnrichmondelacruz@gmail.com
-      </p>
+<footer className="footer">
 
-      <p>
-        Lipa City Public Market, Lipa City, Batangas
-      </p>
-    </footer>
-  );
+<h3>
+
+Amang & Beth Rice Store
+
+</h3>
+
+<p>
+
+📍 Stall# G-53, Lipa City Public Market, Lipa City, Batangas
+
+</p>
+
+<p>
+
+📞 981 - 4658
+
+</p>
+
+<p>
+
+✉ johnrichmondelacruz@gmail.com
+
+</p>
+
+<p>
+
+© 2026 All Rights Reserved
+
+</p>
+
+</footer>
+
+);
+
 }
 
 export default Footer;

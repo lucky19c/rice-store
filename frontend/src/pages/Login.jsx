@@ -1,93 +1,88 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/AdminLogin.css";
 
 function Login() {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
+  const handleLogin = (e) => {
 
-    const handleLogin = () => {
+    e.preventDefault();
 
-        if(
-            username === "admin" &&
-            password === "admin123"
-        ){
+    if (
+      username === "admin" &&
+      password === "admin123"
+    ) {
 
-            localStorage.setItem(
-                "isAdmin",
-                "true"
-            );
+      localStorage.setItem("isAdmin", "true");
 
-            alert(
-                "Login successful"
-            );
+      alert("Login successful!");
 
-            navigate("/admin");
+      navigate("/admin");
 
-        }
+    } else {
 
-        else{
+      alert("Invalid username or password");
 
-            alert(
-                "Invalid credentials"
-            );
+    }
 
-        }
+  };
 
-    };
+  return (
 
+    <div className="admin-login-container">
 
-    return(
+      <div className="admin-login-card">
 
-        <div
-        style={{
-            padding:"40px",
-            display:"flex",
-            flexDirection:"column",
-            gap:"15px",
-            width:"300px",
-            margin:"auto"
-        }}
+        <h1>Admin Login</h1>
+
+        <p>
+          Sign in to manage products and orders
+        </p>
+
+        <form
+          className="admin-login-form"
+          onSubmit={handleLogin}
         >
 
-            <h1>
-                Admin Login
-            </h1>
-
-
-            <input
+          <input
+            type="text"
             placeholder="Username"
             value={username}
-            onChange={(e)=>
-            setUsername(
-                e.target.value
-            )}
-            />
+            onChange={(e) =>
+              setUsername(e.target.value)
+            }
+            required
+          />
 
-
-            <input
+          <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e)=>
-            setPassword(
-                e.target.value
-            )}
-            />
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+            required
+          />
 
+          <button
+            type="submit"
+            className="login-btn"
+          >
+            Login
+          </button>
 
-            <button
-            onClick={handleLogin}
-            >
-                Login
-            </button>
+        </form>
 
-        </div>
+      </div>
 
-    );
+    </div>
+
+  );
 
 }
 

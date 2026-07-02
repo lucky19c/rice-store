@@ -3,6 +3,7 @@ from database import connection
 
 checkout = Blueprint("checkout", __name__)
 
+
 @checkout.route("/checkout", methods=["POST"])
 def place_order():
 
@@ -16,7 +17,10 @@ def place_order():
         cursor = connection.cursor()
 
 
-        # Insert customer
+        # ==========================
+        # Save customer
+        # ==========================
+
         customer_query = """
 
         INSERT INTO customers
@@ -47,46 +51,89 @@ def place_order():
         )
 
         cursor.execute(
+
             customer_query,
             customer_values
+
         )
 
-        customer_id = cursor.lastrowid
+        customer_id=cursor.lastrowid
 
 
-        # Insert order
+        # ==========================
+        # Calculate total
+        # ==========================
+
+        total_amount=0
+
+        for item in items:
+
+            total_amount += (
+
+                float(item["price"]) *
+                int(item["quantity"])
+
+            )
+
+
+        # ==========================
+        # Create order
+        # ==========================
+
         cursor.execute(
 
             """
 
             INSERT INTO orders
-            (customer_id)
+            (
+                customer_id,
+                total_amount,
+                status
+            )
 
-            VALUES(%s)
+            VALUES
+            (
+                %s,
+                %s,
+                %s
+            )
 
             """,
 
-            (customer_id,)
+            (
+
+                customer_id,
+                total_amount,
+                "Pending"
+
+            )
 
         )
 
-        order_id = cursor.lastrowid
+        order_id=cursor.lastrowid
 
 
-        # Process products
+        # ==========================
+        # Process items
+        # ==========================
+
         for item in items:
 
-            product_id = item["product_id"]
-            quantity = item["quantity"]
+            product_id=item["product_id"]
+
+            quantity=item["quantity"]
 
 
-            # Check stock first
+            # Check stock
+
             cursor.execute(
 
                 """
 
                 SELECT stock_quantity
+
                 FROM products
+
                 WHERE product_id=%s
 
                 """,
@@ -95,16 +142,20 @@ def place_order():
 
             )
 
-            product = cursor.fetchone()
+            product=cursor.fetchone()
+
 
             if not product:
 
                 return jsonify({
-                    "error":"Product not found"
+
+                    "error":
+                    "Product not found"
+
                 }),404
 
 
-            current_stock = product[0]
+            current_stock=product[0]
 
 
             if current_stock < quantity:
@@ -112,12 +163,14 @@ def place_order():
                 return jsonify({
 
                     "error":
-                    f"Not enough stock available"
+
+                    f"Only {current_stock} stock remaining"
 
                 }),400
 
 
             # Save order item
+
             cursor.execute(
 
                 """
@@ -149,15 +202,17 @@ def place_order():
             )
 
 
-            # Reduce stock quantity
+            # Reduce stock
+
             cursor.execute(
 
                 """
 
                 UPDATE products
 
-                SET stock_quantity =
-                stock_quantity - %s
+                SET stock_quantity=
+
+                stock_quantity-%s
 
                 WHERE product_id=%s
 
@@ -187,7 +242,12 @@ def place_order():
 
     except Exception as e:
 
-        print("ERROR:",e)
+        print(
+
+            "CHECKOUT ERROR:",
+            e
+
+        )
 
         return jsonify({
 

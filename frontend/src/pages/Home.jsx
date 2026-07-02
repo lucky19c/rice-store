@@ -1,159 +1,199 @@
-import banner from "../assets/banner.jpg";
-import { useNavigate } from "react-router-dom";
+import "../styles/Home.css";
+
+import rice from "../assets/rice.jpg";
+import coffee from "../assets/kapengbarako.jpg";
+import chicharon from "../assets/chicharon.jpg";
+import munggo from "../assets/mungbeans.jpg";
+import pinipig from "../assets/pinipig.jpg";
+import sugar from "../assets/sugar.jpg";
+
+import { Link } from "react-router-dom";
 
 function Home() {
-  const navigate = useNavigate();
 
-const featuredProducts = [
+    return (
 
-{
-name:"Rice",
-description:"Premium quality rice carefully selected for freshness, taste, and everyday meals.",
-image:"/src/assets/rice.jpg"
-},
+        <>
 
-{
-name:"Kapeng Barako",
-description:"Rich and aromatic coffee with a bold flavor, perfect for coffee lovers.",
-image:"/src/assets/kapengbarako.jpg"
-},
+            <div className="hero">
 
-{
-name:"Sugar",
-description:"Fine quality sugar perfect for sweetening drinks, desserts, and daily cooking.",
-image:"/src/assets/sugar.jpg"
-},
+                <div className="hero-content">
 
-{
-name:"Chicharon",
-description:"Crunchy and flavorful pork snack made for satisfying every craving.",
-image:"/src/assets/chicharon.jpg"
-},
+                    <h1>
+                        Amang & Beth Rice Store
+                    </h1>
 
-{
-name:"Munggo",
-description:"Nutritious and versatile green mung beans, perfect for soups, desserts, and everyday meals.",
-image:"/src/assets/mungbeans.jpg"
-},
+                    <Link to="/products">
 
-{
-name:"Pinipig",
-description:"Light and crunchy flattened young rice grains, ideal for snacks, desserts, and traditional delicacies.",
-image:"/src/assets/pinipig.jpg"
-},
-];
+                        <button className="shop-btn">
 
-return(
+                            Shop Now
 
-<div>
+                        </button>
 
-<div
-style={{
-height:"500px",
-backgroundImage:`url(${banner})`,
-backgroundSize:"cover",
-backgroundPosition:"center",
-display:"flex",
-justifyContent:"center",
-alignItems:"center",
-flexDirection:"column",
-color:"white",
-textAlign:"center"
-}}
->
+                    </Link>
 
-<h1
-style={{
-fontSize:"55px"
-}}
->
-Amang and Beth Rice Store
-</h1>
+                </div>
 
-<h3>
-Quality Products • Affordable Prices • Trusted Service
-</h3>
-
-<button
-onClick={() => navigate("/products")}
-style={{
-padding:"12px 25px",
-marginTop:"20px",
-fontSize:"16px",
-borderRadius:"5px",
-border:"none"
-}}
->
-Browse Products
-</button>
-
-</div>
+            </div>
 
 
-<div
-style={{
-padding:"50px"
-}}
->
+            <section className="featured">
 
-<h2
-style={{
-textAlign:"center",
-marginBottom:"30px"
-}}
->
-Featured Products
-</h2>
+                <h2>
 
-<div
-style={{
-display:"flex",
-justifyContent:"center",
-gap:"20px",
-flexWrap:"wrap"
-}}
->
+                    Featured Products
 
-{
-featuredProducts.map((item,index)=>(
+                </h2>
 
-<div
-key={index}
-style={{
-width:"250px",
-border:"1px solid gray",
-borderRadius:"10px",
-padding:"15px",
-textAlign:"center"
-}}
->
 
-<img
-src={item.image}
-style={{
-width:"100%",
-height:"180px",
-objectFit:"cover",
-borderRadius:"10px"
-}}
-/>
+                <div className="feature-grid">
 
-<h3>{item.name}</h3>
 
-<p>{item.description}</p>
+                    <div className="feature-card">
 
-</div>
+                        <img
+                        src={rice}
+                        alt="Rice"
+                        />
 
-))
-}
+                        <div className="feature-card-content">
 
-</div>
+                            <h3>
+                                Rice
+                            </h3>
 
-</div>
+                            <p>
+                                Fresh and high-quality rice varieties.
+                            </p>
 
-</div>
+                        </div>
 
-)
+                    </div>
+
+
+
+                    <div className="feature-card">
+
+                        <img
+                        src={coffee}
+                        alt="Kapeng Barako"
+                        />
+
+                        <div className="feature-card-content">
+
+                            <h3>
+                                Kapeng Barako
+                            </h3>
+
+                            <p>
+                                Strong and aromatic local coffee.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div className="feature-card">
+
+                        <img
+                        src={chicharon}
+                        alt="Chicharon"
+                        />
+
+                        <div className="feature-card-content">
+
+                            <h3>
+                                Chicharon
+                            </h3>
+
+                            <p>
+                                Crunchy snack perfect for every meal.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div className="feature-card">
+
+                        <img
+                        src={munggo}
+                        alt="Munggo"
+                        />
+
+                        <div className="feature-card-content">
+
+                            <h3>
+                                Munggo
+                            </h3>
+
+                            <p>
+                                Nutritious green beans for soups and dishes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div className="feature-card">
+
+                        <img
+                        src={pinipig}
+                        alt="Pinipig"
+                        />
+
+                        <div className="feature-card-content">
+
+                            <h3>
+                                Pinipig
+                            </h3>
+
+                            <p>
+                                Traditional crispy rice flakes snack.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div className="feature-card">
+
+                        <img
+                        src={sugar}
+                        alt="Sugar"
+                        />
+
+                        <div className="feature-card-content">
+
+                            <h3>
+                                Sugar
+                            </h3>
+
+                            <p>
+                                Sweetener for beverages and cooking.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+        </>
+
+    );
 
 }
 

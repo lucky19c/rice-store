@@ -1,22 +1,28 @@
-import { useEffect,useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../styles/Admin.css";
 
-function Admin(){
+function Admin() {
 
 const [products,setProducts]=useState([]);
+const [previewImage,setPreviewImage]=useState(null);
 
-const [form,setForm]=useState({
+const [newProduct,setNewProduct]=useState({
 
 rice_name:"",
 description:"",
 price:"",
 stock_quantity:"",
-image:"",
-category:"Rice"
+category:"",
+image:null
 
 });
 
 const [editingId,setEditingId]=useState(null);
+
+const fileInputRef=useRef(null);
+const navigate=useNavigate();
 
 
 useEffect(()=>{
@@ -26,89 +32,18 @@ fetchProducts();
 },[]);
 
 
+
 const fetchProducts=async()=>{
-
-const response=
-
-await axios.get(
-"http://127.0.0.1:5000/products"
-);
-
-setProducts(
-response.data
-);
-
-};
-
-
-const handleChange=(e)=>{
-
-setForm({
-
-...form,
-
-[e.target.name]:
-e.target.value
-
-});
-
-};
-
-
-const handleSubmit=async()=>{
 
 try{
 
-if(editingId){
-
-await axios.put(
-
-`http://127.0.0.1:5000/products/${editingId}`,
-
-form
-
+const response=await axios.get(
+"http://127.0.0.1:5000/products"
 );
 
-alert(
-"Updated successfully"
-);
+setProducts(response.data);
 
 }
-
-else{
-
-await axios.post(
-
-"http://127.0.0.1:5000/products",
-
-form
-
-);
-
-alert(
-"Added successfully"
-);
-
-}
-
-
-setForm({
-
-rice_name:"",
-description:"",
-price:"",
-stock_quantity:"",
-image:"",
-category:"Rice"
-
-});
-
-setEditingId(null);
-
-fetchProducts();
-
-}
-
 catch(error){
 
 console.log(error);
@@ -118,34 +53,300 @@ console.log(error);
 };
 
 
+
+const totalProducts=products.length;
+
+const totalStock=products.reduce(
+
+(total,item)=>
+
+total+Number(item.stock_quantity),
+
+0
+
+);
+
+const lowStock=products.filter(
+
+(item)=>
+
+Number(item.stock_quantity)<=5 &&
+Number(item.stock_quantity)>0
+
+).length;
+
+const outOfStock=products.filter(
+
+(item)=>
+
+Number(item.stock_quantity)===0
+
+).length;
+
+
+
+const handleChange=(e)=>{
+
+setNewProduct({
+
+...newProduct,
+[e.target.name]:e.target.value
+
+});
+
+};
+
+
+
+const handleImage=(e)=>{
+
+const file=e.target.files[0];
+
+setNewProduct({
+
+...newProduct,
+image:file
+
+});
+
+if(file){
+
+setPreviewImage(
+URL.createObjectURL(file)
+);
+
+}
+
+};
+
+
+
+const clearForm=()=>{
+
+setNewProduct({
+
+rice_name:"",
+description:"",
+price:"",
+stock_quantity:"",
+category:"",
+image:null
+
+});
+
+setPreviewImage(null);
+
+setEditingId(null);
+
+if(fileInputRef.current){
+
+fileInputRef.current.value="";
+
+}
+
+};
+
+
+
+const addProduct=async(e)=>{
+
+e.preventDefault();
+
+try{
+
+const formData=new FormData();
+
+formData.append(
+"rice_name",
+newProduct.rice_name
+);
+
+formData.append(
+"description",
+newProduct.description
+);
+
+formData.append(
+"price",
+newProduct.price
+);
+
+formData.append(
+"stock_quantity",
+newProduct.stock_quantity
+);
+
+formData.append(
+"category",
+newProduct.category
+);
+
+formData.append(
+"image",
+newProduct.image
+);
+
+await axios.post(
+
+"http://127.0.0.1:5000/products",
+
+formData,
+
+{
+headers:{
+"Content-Type":
+"multipart/form-data"
+}
+}
+
+);
+
+alert(
+"Product Added Successfully"
+);
+
+fetchProducts();
+
+clearForm();
+
+}
+catch(error){
+
+console.log(error);
+
+alert(
+"Error adding product"
+);
+
+}
+
+};
+
+
+
 const editProduct=(product)=>{
 
 setEditingId(
 product.product_id
 );
 
-setForm(product);
+setNewProduct({
+
+rice_name:product.rice_name,
+description:product.description,
+price:product.price,
+stock_quantity:product.stock_quantity,
+category:product.category,
+image:product.image
+
+});
+
+setPreviewImage(
+product.image
+);
 
 };
 
 
+
+const updateProduct=async(e)=>{
+
+e.preventDefault();
+
+try{
+
+await axios.put(
+
+`http://127.0.0.1:5000/products/${editingId}`,
+
+{
+
+rice_name:newProduct.rice_name,
+description:newProduct.description,
+price:newProduct.price,
+stock_quantity:newProduct.stock_quantity,
+category:newProduct.category,
+
+image:
+typeof newProduct.image==="string"
+?
+newProduct.image
+:
+previewImage
+
+}
+
+);
+
+alert(
+"Product Updated Successfully"
+);
+
+fetchProducts();
+
+clearForm();
+
+}
+catch(error){
+
+console.log(error);
+
+alert(
+"Error updating product"
+);
+
+}
+
+};
+
+
+
 const deleteProduct=async(id)=>{
 
-if(
+try{
 
-!window.confirm(
+const confirmDelete=window.confirm(
 "Delete this product?"
-)
+);
 
-)return;
+if(!confirmDelete){
 
-await axios.delete(
+return;
+
+}
+
+const response=await axios.delete(
 
 `http://127.0.0.1:5000/products/${id}`
 
 );
 
+console.log(
+response.data
+);
+
+alert(
+"Product Deleted Successfully"
+);
+
 fetchProducts();
+
+}
+catch(error){
+
+console.log(
+
+"Delete Error:",
+
+error.response?.data || error
+
+);
+
+alert(
+"Failed to delete product"
+);
+
+}
 
 };
 
@@ -153,123 +354,193 @@ fetchProducts();
 
 return(
 
-<div style={{
+<div className="admin-container">
 
-padding:"50px"
+<div className="admin-header">
 
-}}>
+<h1 className="admin-title">
 
-<h1>
-Admin Panel
+Admin Dashboard
+
 </h1>
 
+<button
+className="orders-btn"
+onClick={()=>
+navigate("/orders")
+}
+>
+
+View Order History
+
+</button>
+
+</div>
+
+
+
+<div className="dashboard-cards">
+
+<div className="dashboard-card">
+
+<h3>Products</h3>
+
+<p>{totalProducts}</p>
+
+</div>
+
+
+<div className="dashboard-card">
+
+<h3>Total Stock</h3>
+
+<p>{totalStock}</p>
+
+</div>
+
+
+<div className="dashboard-card">
+
+<h3>Low Stock</h3>
+
+<p>{lowStock}</p>
+
+</div>
+
+
+<div className="dashboard-card">
+
+<h3>Out of Stock</h3>
+
+<p>{outOfStock}</p>
+
+</div>
+
+</div>
+
+
+
+<form
+className="admin-form"
+onSubmit={
+editingId
+?
+updateProduct
+:
+addProduct
+}
+>
 
 <input
 name="rice_name"
-placeholder="Product name"
-value={form.rice_name}
+placeholder="Product Name"
+value={newProduct.rice_name}
 onChange={handleChange}
+required
 />
 
-<br/><br/>
-
-
-<textarea
+<input
 name="description"
 placeholder="Description"
-value={form.description}
+value={newProduct.description}
 onChange={handleChange}
+required
 />
 
-<br/><br/>
-
-
 <input
+type="number"
 name="price"
 placeholder="Price"
-value={form.price}
+value={newProduct.price}
 onChange={handleChange}
+required
 />
 
-<br/><br/>
-
-
 <input
+type="number"
 name="stock_quantity"
-placeholder="Stock"
-value={form.stock_quantity}
+placeholder="Stock Quantity"
+value={newProduct.stock_quantity}
 onChange={handleChange}
+required
 />
-
-<br/><br/>
-
 
 <input
-name="image"
-placeholder="Image URL"
-value={form.image}
+name="category"
+placeholder="Category"
+value={newProduct.category}
 onChange={handleChange}
 />
 
-<br/><br/>
 
 
-<select
-name="category"
-value={form.category}
-onChange={handleChange}
->
+<div className="upload-container">
 
-<option>Rice</option>
-<option>Coffee</option>
-<option>Snacks</option>
-<option>Beans</option>
+<label>
 
-</select>
+Upload Product Image
 
-<br/><br/>
+</label>
+
+<input
+type="file"
+accept="image/*"
+ref={fileInputRef}
+onChange={handleImage}
+/>
 
 
-<button
-onClick={handleSubmit}
->
+{
 
-{editingId ?
+previewImage && (
 
+<img
+src={previewImage}
+className="preview-image"
+alt="preview"
+/>
+
+)
+
+}
+
+</div>
+
+
+
+<button>
+
+{
+
+editingId
+?
 "Update Product"
-
 :
-
 "Add Product"
 
 }
 
 </button>
 
+</form>
 
-<hr/>
 
-<h2>
-Existing Products
-</h2>
+
+<div className="admin-products">
 
 {
 
-products.map(product=>(
+products.map((product)=>(
 
 <div
-
+className="admin-card"
 key={product.product_id}
-
-style={{
-
-border:"1px solid #ccc",
-padding:"15px",
-marginBottom:"10px"
-
-}}
-
 >
+
+<img
+src={product.image}
+alt={product.rice_name}
+/>
 
 <h3>
 
@@ -291,21 +562,19 @@ marginBottom:"10px"
 
 <p>
 
-Stock:
-
-{product.stock_quantity}
+Stock: {product.stock_quantity}
 
 </p>
 
 
+<div className="admin-buttons">
+
 <button
-
+type="button"
+className="edit-btn"
 onClick={()=>
-
 editProduct(product)
-
 }
-
 >
 
 Edit
@@ -314,21 +583,13 @@ Edit
 
 
 <button
-
+type="button"
+className="delete-btn"
 onClick={()=>
-
 deleteProduct(
 product.product_id
 )
-
 }
-
-style={{
-
-marginLeft:"10px"
-
-}}
-
 >
 
 Delete
@@ -337,9 +598,13 @@ Delete
 
 </div>
 
+</div>
+
 ))
 
 }
+
+</div>
 
 </div>
 

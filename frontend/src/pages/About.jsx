@@ -1,48 +1,130 @@
-function About() {
+import "../styles/About.css";
+import banner from "../assets/store.jpg";
 
-    return (
+function About(){
 
-        <div
-        style={{
-            padding:"50px",
-            maxWidth:"900px",
-            margin:"auto",
-            textAlign:"center"
-        }}
-        >
+return(
 
-            <h1>About Us</h1>
+<div className="about-container">
 
-            <p
-            style={{
-                fontSize:"18px",
-                lineHeight:"1.8"
-            }}
-            >
-                Welcome to Amang and Beth Rice Store — your trusted
-                source for quality products and excellent service.
-                We are committed to providing customers with reliable
-                products at affordable prices while ensuring
-                convenience and customer satisfaction in every purchase.
+<h1 className="about-title">
 
-                <br/><br/>
+About Us
 
-                Our goal is to serve the community by offering
-                quality goods that meet everyday needs. We value
-                trust, consistency, and building lasting relationships
-                with our customers through friendly service and
-                dependable products.
+</h1>
 
-                <br/><br/>
+<p className="about-subtitle">
 
-                Thank you for visiting Amang and Beth Rice Store.
-                We look forward to serving you and becoming part of
-                your everyday needs.
-            </p>
+Serving quality rice and local products with care and dedication.
 
-        </div>
+</p>
 
-    );
+
+<div className="about-content">
+
+<div className="about-image">
+
+<img
+src={banner}
+alt="Amang & Beth Rice Store"
+/>
+
+</div>
+
+
+<div className="about-text">
+
+<p>
+
+Amang & Beth Rice Store is committed to providing
+high-quality rice and locally sourced products to
+our customers in Lipa City and nearby areas.
+
+</p>
+
+<br/>
+
+<p>
+
+We offer carefully selected products including
+rice varieties, Kapeng Barako, Chicharon,
+Sugar, Munggo, and other essential goods
+at affordable prices.
+
+</p>
+
+<br/>
+
+<p>
+
+Our mission is to provide customers with
+fresh products, excellent service, and a
+convenient shopping experience.
+
+</p>
+
+</div>
+
+</div>
+
+
+<div className="about-stats">
+
+<div className="stat-card">
+
+<h2>
+
+200+
+
+</h2>
+
+<p>
+
+Happy Customers
+
+</p>
+
+</div>
+
+
+<div className="stat-card">
+
+<h2>
+
+20+
+
+</h2>
+
+<p>
+
+Products
+
+</p>
+
+</div>
+
+
+<div className="stat-card">
+
+<h2>
+
+20+
+
+</h2>
+
+<p>
+
+Years Experience
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+);
 
 }
 

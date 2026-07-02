@@ -1,10 +1,11 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
+import "../styles/Cart.css";
 
 function Cart(){
 
-const {
+const{
 
 cart,
 addToCart,
@@ -26,12 +27,7 @@ cart.reduce(
 
 total+
 
-(
-
-item.price*
-item.quantity
-
-),
+(item.price*item.quantity),
 
 0
 
@@ -40,15 +36,9 @@ item.quantity
 
 return(
 
-<div
-style={{
+<div className="cart-container">
 
-padding:"40px"
-
-}}
->
-
-<h1>
+<h1 className="cart-title">
 
 Shopping Cart
 
@@ -61,39 +51,44 @@ cart.length===0
 
 ?
 
-<p>
+<div className="empty-cart">
 
-Cart is empty
+    Your cart is empty
 
-</p>
+</div>
 
 :
+
+<>
+
+{
 
 cart.map(item=>(
 
 <div
-
+className="cart-card"
 key={item.product_id}
-
-style={{
-
-border:"1px solid #ddd",
-
-padding:"15px",
-
-marginBottom:"15px",
-
-borderRadius:"10px"
-
-}}
-
 >
 
-<h3>
+<div className="cart-left">
+
+<img
+
+src={item.image}
+
+alt={item.rice_name}
+
+className="cart-image"
+
+/>
+
+<div>
+
+<h2>
 
 {item.rice_name}
 
-</h3>
+</h2>
 
 <p>
 
@@ -101,36 +96,31 @@ borderRadius:"10px"
 
 </p>
 
+<p>
+
+Subtotal:
+
+₱{(
+item.price*
+item.quantity
+).toFixed(2)}
+
+</p>
+
 
 <div
-
-style={{
-
-display:"flex",
-
-alignItems:"center",
-
-gap:"10px"
-
-}}
-
+className="quantity-controls"
 >
 
 <button
-
 onClick={()=>
-
 decreaseQuantity(
-
 item.product_id
-
 )
-
 }
-
 >
 
--
+−
 
 </button>
 
@@ -143,13 +133,9 @@ item.product_id
 
 
 <button
-
 onClick={()=>
-
 addToCart(item)
-
 }
-
 >
 
 +
@@ -159,34 +145,15 @@ addToCart(item)
 </div>
 
 
-<p>
-
-Subtotal:
-
-₱
-
-{(
-
-item.price*
-item.quantity
-
-).toFixed(2)}
-
-</p>
-
-
 <button
 
+className="remove-btn"
+
 onClick={()=>
-
 removeProduct(
-
 item.product_id
-
 )
-
 }
-
 >
 
 Remove
@@ -195,37 +162,39 @@ Remove
 
 </div>
 
+</div>
+
+</div>
+
 ))
 
 }
 
 
-{
-
-cart.length>0 &&
-
-<>
+<div className="total-box">
 
 <h2>
 
 Total:
 
-₱
-
-{totalPrice.toFixed(2)}
+₱{totalPrice.toFixed(2)}
 
 </h2>
 
 
 <Link to="/checkout">
 
-<button>
+<button
+className="checkout-btn"
+>
 
 Proceed to Checkout
 
 </button>
 
 </Link>
+
+</div>
 
 </>
 

@@ -1,87 +1,285 @@
-import { useEffect, useState } from "react";
+import { useEffect,useState } from "react";
 import api from "../services/api";
+import "../styles/Orders.css";
 
 function Orders(){
 
-    const [orders,setOrders] = useState([]);
-
-    useEffect(()=>{
-
-        fetchOrders();
-
-    },[]);
+const [orders,setOrders]=useState([]);
 
 
-    const fetchOrders = async()=>{
+useEffect(()=>{
 
-        const response =
-        await api.get("/orders");
+fetchOrders();
 
-        setOrders(
-            response.data
-        );
-
-    };
+},[]);
 
 
-    return(
 
-        <div style={{padding:"50px"}}>
+const fetchOrders=async()=>{
 
-            <h1>
-                Customer Orders
-            </h1>
+try{
 
-            {
+const response=await api.get(
+"/orders"
+);
 
-                orders.map(order=>(
+setOrders(
+response.data
+);
 
-                    <div
-                    key={order.order_id}
-                    style={{
-                        border:"1px solid #ddd",
-                        marginBottom:"20px",
-                        padding:"20px",
-                        borderRadius:"10px"
-                    }}
-                    >
+}
+catch(error){
 
-                        <h3>
+console.log(error);
 
-                            Order #
+}
 
-                            {order.order_id}
+};
 
-                        </h3>
 
-                        <p>
-                            Customer:
-                            {order.fullname}
-                        </p>
 
-                        <p>
-                            Contact:
-                            {order.contact_number}
-                        </p>
+const updateStatus=async(id,status)=>{
 
-                        <p>
-                            Total:
-                            ₱{order.total_amount}
-                        </p>
+try{
 
-                        <p>
-                            Status:
-                            {order.status}
-                        </p>
+await api.put(
 
-                    </div>
+`/orders/${id}`,
 
-                ))
+{
+status
+}
 
-            }
+);
 
-        </div>
-    )
+fetchOrders();
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+};
+
+
+
+const deleteOrder=async(id)=>{
+
+const confirmDelete=
+
+window.confirm(
+"Delete this order?"
+);
+
+if(!confirmDelete){
+
+return;
+
+}
+
+try{
+
+await api.delete(
+
+`/orders/${id}`
+
+);
+
+fetchOrders();
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+};
+
+
+
+return(
+
+<div className="orders-container">
+
+<h1>
+
+Customer Orders
+
+</h1>
+
+
+<div className="orders-grid">
+
+{
+
+orders.map(order=>(
+
+<div
+className="order-card"
+key={order.order_id}
+>
+
+<h3>
+
+Order #
+
+{order.order_id}
+
+</h3>
+
+
+<p>
+
+<strong>
+
+Customer:
+
+</strong>
+
+{" "}
+
+{order.fullname}
+
+</p>
+
+
+<p>
+
+<strong>
+
+Contact:
+
+</strong>
+
+{" "}
+
+{order.contact_number}
+
+</p>
+
+
+<p>
+
+<strong>
+
+Email:
+
+</strong>
+
+{" "}
+
+{order.email}
+
+</p>
+
+
+<p>
+
+<strong>
+
+Address:
+
+</strong>
+
+{" "}
+
+{order.address}
+
+</p>
+
+
+<p>
+
+<strong>
+
+Total:
+
+</strong>
+
+₱{order.total_amount}
+
+</p>
+
+
+
+<div
+className={`order-status ${order.status.toLowerCase()}`}
+>
+
+{order.status}
+
+</div>
+
+
+
+<select
+
+className={`status-select ${order.status.toLowerCase()}`}
+
+value={order.status}
+
+onChange={(e)=>
+
+updateStatus(
+
+order.order_id,
+e.target.value
+
+)
+
+}
+
+>
+
+<option value="Pending">
+
+Pending
+
+</option>
+
+<option value="Processing">
+
+Processing
+
+</option>
+
+<option value="Completed">
+
+Completed
+
+</option>
+
+</select>
+
+
+
+<button
+className="delete-order"
+onClick={()=>
+deleteOrder(
+order.order_id
+)
+}
+>
+
+Delete Order
+
+</button>
+
+</div>
+
+))
+
+}
+
+</div>
+
+</div>
+
+);
 
 }
 
