@@ -81,16 +81,6 @@ totalItems>0
 
 </Link>
 
-
-<Link
-to="/login"
-className="admin-btn"
->
-
-Admin
-
-</Link>
-
 </div>
 
 </nav>
