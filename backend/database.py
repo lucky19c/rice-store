@@ -1,11 +1,11 @@
+import os
 import mysql.connector
 
-connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Luckyboy.19",
-    database="rice_business"
-)
+connection=mysql.connector.connect(
 
-if connection.is_connected():
-    print("Database connected!")
+host=os.environ.get("DB_HOST"),
+user=os.environ.get("DB_USER"),
+password=os.environ.get("DB_PASSWORD"),
+database=os.environ.get("DB_NAME")
+
+)
